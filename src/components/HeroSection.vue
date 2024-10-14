@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
+        <p>Scroll &uarr; or &darr;</p>
       </div>
     </div>
   </section>
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
+        <p>Scroll &uarr; or &darr;</p>
       </div>
     </div>
   </section>
@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
+        <p>Scroll &uarr; or &darr;</p>
       </div>
     </div>
   </section>
@@ -46,7 +46,7 @@
         </div>
       </div>
       <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
+        <p>Scroll &uarr; or &darr;</p>
       </div>
     </div>
   </section>
@@ -58,7 +58,7 @@
         </div>
       </div>
       <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
+        <p>Scroll &uarr; or &darr;</p>
       </div>
     </div>
   </section>

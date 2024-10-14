@@ -55,8 +55,8 @@ onMounted(async () => {
 
 onUnmounted(() => {
   observerInstance.kill();
-  splitHeadings.value.forEach((split) => split.destroy());
-  splitContinueScrollings.value.forEach((split) => split.destroy());
+  splitHeadings.value.forEach((split) => split.revert());
+  splitContinueScrollings.value.forEach((split) => split.revert());
 });
 
 const wrap = (index, max) => (index + max) % max;
