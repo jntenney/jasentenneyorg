@@ -22,17 +22,17 @@ const animating = ref(false);
 
 let observerInstance = null;
 const bgImages = ref([
-  'https://images.unsplash.com/photo-1617478755490-e21232a5eeaf',
-  'https://images.unsplash.com/photo-1617128734662-66da6c1d3505',
-  'https://images.unsplash.com/photo-1617438817509-70e91ad264a5',
-  'https://images.unsplash.com/photo-1617412327653-c29093585207',
-  'https://images.unsplash.com/photo-1617141636403-f511e2d5dc17',
-  'https://images.unsplash.com/photo-1728618562042-f829dbc0ef97',
-  'https://images.unsplash.com/photo-1728593447201-d3a4506b15a4',
-  'https://images.unsplash.com/photo-1728794371271-501a846645be',
-  'https://images.unsplash.com/photo-1704115859446-601dfae181c2',
-  'https://images.unsplash.com/photo-1728237646970-e73938b2c1d1',
-  'https://images.unsplash.com/photo-1728155253434-262ab74ef031',
+  'https://images.unsplash.com/photo-1617478755490-e21232a5eeaf?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1617128734662-66da6c1d3505?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1617438817509-70e91ad264a5?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1617412327653-c29093585207?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1617141636403-f511e2d5dc17?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1728618562042-f829dbc0ef97?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1728593447201-d3a4506b15a4?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1728794371271-501a846645be?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1704115859446-601dfae181c2?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1728237646970-e73938b2c1d1?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1728155253434-262ab74ef031?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
 ]);
 
 const scrollCount = ref(0);
