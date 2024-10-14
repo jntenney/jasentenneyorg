@@ -1,5 +1,6 @@
 <script setup>
 import HeaderSection from './components/HeaderSection.vue';
+import HeroSection from './components/HeroSection.vue';
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import { gsap } from 'gsap';
 import { Observer } from 'gsap/dist/Observer';
@@ -130,85 +131,7 @@ function gotoSection(index, direction) {
 
 <template>
   <HeaderSection />
-  <section class="first">
-    <div class="outer">
-      <div class="inner">
-        <div class="bg one">
-          <h3 class="section-heading">
-            I'm a software engineer specializing in interactive experiences. I love to create engaging and immersive
-            digitalexperiences for users.
-          </h3>
-        </div>
-      </div>
-      <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
-      </div>
-    </div>
-  </section>
-  <section class="second">
-    <div class="outer">
-      <div class="inner">
-        <div class="bg">
-          <h2 class="section-heading">Full Stack Engineer</h2>
-        </div>
-      </div>
-      <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
-      </div>
-    </div>
-  </section>
-  <section class="third">
-    <div class="outer">
-      <div class="inner">
-        <div class="bg">
-          <h2 class="section-heading">Front End</h2>
-        </div>
-      </div>
-      <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
-      </div>
-    </div>
-  </section>
-  <section class="fourth">
-    <div class="outer">
-      <div class="inner">
-        <div class="bg">
-          <h2 class="section-heading">Back End</h2>
-        </div>
-      </div>
-      <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
-      </div>
-    </div>
-  </section>
-  <section class="fifth">
-    <div class="outer">
-      <div class="inner">
-        <div class="bg">
-          <h2 class="section-heading">Cloud</h2>
-        </div>
-      </div>
-      <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
-      </div>
-    </div>
-  </section>
+  <HeroSection />
 </template>
 
-<style scoped>
-.continue-scrolling {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  z-index: 10;
-}
-
-.continue-scrolling p {
-  margin: 0;
-  padding: 10px;
-  color: white;
-  border-radius: 5px;
-}
-</style>
+<style scoped></style>
