@@ -21,6 +21,21 @@ let currentIndex = ref(-1);
 const animating = ref(false);
 
 let observerInstance = null;
+const bgImages = ref([
+  'https://images.unsplash.com/photo-1617478755490-e21232a5eeaf',
+  'https://images.unsplash.com/photo-1617128734662-66da6c1d3505',
+  'https://images.unsplash.com/photo-1617438817509-70e91ad264a5',
+  'https://images.unsplash.com/photo-1617412327653-c29093585207',
+  'https://images.unsplash.com/photo-1617141636403-f511e2d5dc17',
+  'https://images.unsplash.com/photo-1728618562042-f829dbc0ef97',
+  'https://images.unsplash.com/photo-1728593447201-d3a4506b15a4',
+  'https://images.unsplash.com/photo-1728794371271-501a846645be',
+  'https://images.unsplash.com/photo-1704115859446-601dfae181c2',
+  'https://images.unsplash.com/photo-1728237646970-e73938b2c1d1',
+  'https://images.unsplash.com/photo-1728155253434-262ab74ef031',
+]);
+
+const scrollCount = ref(0);
 
 onMounted(async () => {
   await nextTick();
@@ -64,6 +79,27 @@ const wrap = (index, max) => (index + max) % max;
 function gotoSection(index, direction) {
   index = wrap(index, sections.value.length);
   animating.value = true;
+
+  if (scrollCount.value < bgImages.value.length) {
+    const newBgImage = bgImages.value[scrollCount.value];
+
+    // Update the background image of the current section
+    gsap.set(images.value[index], {
+      backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%), url(${newBgImage})`,
+    });
+
+    scrollCount.value++;
+  } else {
+    // Reset scroll count
+    scrollCount.value = 0;
+    const newBgImage = bgImages.value[scrollCount.value];
+
+    // Update the background image of the current section
+    gsap.set(images.value[index], {
+      backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%), url(${newBgImage})`,
+    });
+  }
+
   let fromTop = direction === -1,
     dFactor = fromTop ? -1 : 1,
     tl = gsap.timeline({
