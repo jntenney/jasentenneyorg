@@ -76,6 +76,7 @@ onUnmounted(() => {
 
 const wrap = (index, max) => (index + max) % max;
 
+// Initial inspiration from https://codepen.io/BrianCross/pen/PoWapLP, then heavily modified by me for use in Vue, multiple background images, and other tweaks.
 function gotoSection(index, direction) {
   index = wrap(index, sections.value.length);
   animating.value = true;
