@@ -1,6 +1,6 @@
-# jasentenneyorg7
+# jasentenney.org - v1.0.0
 
-This template should help get you started developing with Vue 3 in Vite.
+The first iteration of my personal website, [jasentenney.org](https://jasentenney.org/), built with [Vue](https://vuejs.org/), [GSAP Premium](https://gsap.com/) and hosted on [AWS (S3, CloudFront)](https://aws.amazon.com/).
 
 ## Recommended IDE Setup
 

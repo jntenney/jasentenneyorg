@@ -1,5 +1,6 @@
 <script setup>
 import HeaderSection from './components/HeaderSection.vue';
+import HeroSection from './components/HeroSection.vue';
 import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import { gsap } from 'gsap';
 import { Observer } from 'gsap/dist/Observer';
@@ -20,6 +21,21 @@ let currentIndex = ref(-1);
 const animating = ref(false);
 
 let observerInstance = null;
+const bgImages = ref([
+  'https://images.unsplash.com/photo-1617478755490-e21232a5eeaf?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1617128734662-66da6c1d3505?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1617438817509-70e91ad264a5?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1617412327653-c29093585207?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1617141636403-f511e2d5dc17?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1728618562042-f829dbc0ef97?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1728593447201-d3a4506b15a4?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1728794371271-501a846645be?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1704115859446-601dfae181c2?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1728237646970-e73938b2c1d1?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+  'https://images.unsplash.com/photo-1728155253434-262ab74ef031?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
+]);
+
+const scrollCount = ref(0);
 
 onMounted(async () => {
   await nextTick();
@@ -54,15 +70,37 @@ onMounted(async () => {
 
 onUnmounted(() => {
   observerInstance.kill();
-  splitHeadings.value.forEach((split) => split.destroy());
-  splitContinueScrollings.value.forEach((split) => split.destroy());
+  splitHeadings.value.forEach((split) => split.revert());
+  splitContinueScrollings.value.forEach((split) => split.revert());
 });
 
 const wrap = (index, max) => (index + max) % max;
 
+// Initial inspiration from https://codepen.io/BrianCross/pen/PoWapLP, then heavily modified by me for use in Vue, multiple background images, and other tweaks.
 function gotoSection(index, direction) {
   index = wrap(index, sections.value.length);
   animating.value = true;
+
+  if (scrollCount.value < bgImages.value.length) {
+    const newBgImage = bgImages.value[scrollCount.value];
+
+    // Update the background image of the current section
+    gsap.set(images.value[index], {
+      backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%), url(${newBgImage})`,
+    });
+
+    scrollCount.value++;
+  } else {
+    // Reset scroll count
+    scrollCount.value = 0;
+    const newBgImage = bgImages.value[scrollCount.value];
+
+    // Update the background image of the current section
+    gsap.set(images.value[index], {
+      backgroundImage: `linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%), url(${newBgImage})`,
+    });
+  }
+
   let fromTop = direction === -1,
     dFactor = fromTop ? -1 : 1,
     tl = gsap.timeline({
@@ -130,85 +168,7 @@ function gotoSection(index, direction) {
 
 <template>
   <HeaderSection />
-  <section class="first">
-    <div class="outer">
-      <div class="inner">
-        <div class="bg one">
-          <h3 class="section-heading">
-            I'm a software engineer specializing in interactive experiences. I love to create engaging and immersive
-            digitalexperiences for users.
-          </h3>
-        </div>
-      </div>
-      <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
-      </div>
-    </div>
-  </section>
-  <section class="second">
-    <div class="outer">
-      <div class="inner">
-        <div class="bg">
-          <h2 class="section-heading">Full Stack Engineer</h2>
-        </div>
-      </div>
-      <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
-      </div>
-    </div>
-  </section>
-  <section class="third">
-    <div class="outer">
-      <div class="inner">
-        <div class="bg">
-          <h2 class="section-heading">Front End</h2>
-        </div>
-      </div>
-      <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
-      </div>
-    </div>
-  </section>
-  <section class="fourth">
-    <div class="outer">
-      <div class="inner">
-        <div class="bg">
-          <h2 class="section-heading">Back End</h2>
-        </div>
-      </div>
-      <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
-      </div>
-    </div>
-  </section>
-  <section class="fifth">
-    <div class="outer">
-      <div class="inner">
-        <div class="bg">
-          <h2 class="section-heading">Cloud</h2>
-        </div>
-      </div>
-      <div class="continue-scrolling">
-        <p>(Continue scrolling)</p>
-      </div>
-    </div>
-  </section>
+  <HeroSection />
 </template>
 
-<style scoped>
-.continue-scrolling {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  z-index: 10;
-}
-
-.continue-scrolling p {
-  margin: 0;
-  padding: 10px;
-  color: white;
-  border-radius: 5px;
-}
-</style>
+<style scoped></style>

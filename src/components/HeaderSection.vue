@@ -3,7 +3,7 @@
 <template>
   <header>
     <div>
-      <a href="/Jasen_Tenney_2024.pdf" target="_blank">Jasen Tenney</a>
+      <a href="/Jasen_Tenney_2024.pdf" target="_blank" class="name-link">Jasen Tenney</a>
     </div>
     <div>
       <a href="mailto:jasen.tenney@gmail.com" target="_blank">
@@ -23,4 +23,8 @@
   </header>
 </template>
 
-<style scoped></style>
+<style scoped>
+.name-link {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+}
+</style>
