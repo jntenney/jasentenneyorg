@@ -2,9 +2,9 @@
 
 The first iteration of my personal website, [jasentenney.org](https://jasentenney.org/), built with [Vue](https://vuejs.org/), [GSAP Premium](https://gsap.com/) and hosted on [AWS (S3, CloudFront)](https://aws.amazon.com/).
 
-## Homepage Screenshot
+## Homepage Animated Demo
 
-![Homepage Demo](/docs/JasenTenneyOrgHomepage.png)
+![Homepage Demo](/docs/JasenTenneyOrgHomepageAnimated.gif)
 
 ## Recommended IDE Setup
 
