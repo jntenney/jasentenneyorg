@@ -4,7 +4,7 @@ The first iteration of my personal website, [jasentenney.org](https://jasentenne
 
 ## Homepage Screenshot
 
-![Homepage Demo](/docs/JasenTenneyOrgHomepage.png)
+![Homepage Screenshot](/docs/JasenTenneyOrgHomepage.png)
 
 ## Homepage Demo
 
