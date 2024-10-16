@@ -2,6 +2,10 @@
 
 The first iteration of my personal website, [jasentenney.org](https://jasentenney.org/), built with [Vue](https://vuejs.org/), [GSAP Premium](https://gsap.com/) and hosted on [AWS (S3, CloudFront)](https://aws.amazon.com/).
 
+## Homepage Screenshot
+
+![Homepage Demo](/docs/JasenTenneyOrgHomepage.png)
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
