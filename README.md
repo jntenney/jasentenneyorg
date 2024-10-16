@@ -6,6 +6,10 @@ The first iteration of my personal website, [jasentenney.org](https://jasentenne
 
 ![Homepage Demo](/docs/JasenTenneyOrgHomepage.png)
 
+## Homepage Demo
+
+![Homepage Demo](/docs/JasenTenneyOrgAnimated.gif)
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
