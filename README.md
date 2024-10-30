@@ -35,3 +35,9 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Deploy to AWS S3 using CLI
+
+```sh
+aws s3 sync dist s3://jasentenney.org --delete
+```
