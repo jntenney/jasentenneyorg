@@ -6,13 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:prod": "BASE_URL=https://jasentenney.org playwright test"
   },
   "dependencies": {
     "gsap": "^3.15.0",
     "vue": "^3.5.11"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@vitejs/plugin-vue": "^5.1.4",
     "vite": "^5.4.8"
   }

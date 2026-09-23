@@ -9,7 +9,38 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Nothing deploys unless the Playwright suite passes on the exact commit being deployed.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Modules
+        run: npm ci
+
+      - name: Install Playwright Browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright Tests
+        run: npm test
+
+      - name: Upload Test Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository

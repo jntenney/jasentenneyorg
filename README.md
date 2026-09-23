@@ -36,6 +36,18 @@ npm run dev
 npm run build
 ```
 
+### Run the Playwright tests
+
+The end-to-end suite in `tests/e2e/` drives the site in headless Chromium: slide order by keyboard and wheel, input timing and queued key presses, a random fast-input stress test for the blank-slide regression, reduced motion, header links and accessible names, head metadata, and the phone viewport. Playwright starts the Vite dev server itself.
+
+```sh
+npx playwright install chromium   # once
+npm test                          # against the local dev server
+npm run test:prod                 # the same suite against https://jasentenney.org
+```
+
+The suite runs in GitHub Actions on every push to `dev` and every pull request into `main`, and the deploy workflow will not deploy unless it passes.
+
 ### Deploy
 
 Merging `dev` into `main` deploys the site automatically: the [Deploy Website](.github/workflows/main.yml) GitHub Actions workflow builds it, uploads it to S3, and invalidates CloudFront. It can also be run by hand from the Actions tab.
