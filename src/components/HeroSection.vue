@@ -3,10 +3,10 @@
     <div class="outer">
       <div class="inner">
         <div class="bg one">
-          <h3 class="section-heading">
+          <h1 class="section-heading">
             I'm an applied AI full stack engineer and technical lead. I build agentic AI products that take LLM
             workflows from concept to production.
-          </h3>
+          </h1>
         </div>
       </div>
       <div class="continue-scrolling">
