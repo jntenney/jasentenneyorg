@@ -1,12 +1,13 @@
 name: Test
 
 # Runs the Playwright suite against the Vite dev server on every push to dev and every pull
-# request into main. The deploy workflow runs the same suite again before deploying.
+# request into dev or main (Dependabot's PRs target dev). The deploy workflow runs the same
+# suite again before deploying.
 on:
   push:
     branches: [ dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ dev, main ]
   workflow_dispatch:
 
 jobs:

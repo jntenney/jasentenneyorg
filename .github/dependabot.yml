@@ -1,0 +1,33 @@
+# Keeps npm packages and GitHub Actions current. Pull requests target dev, where the
+# Test workflow runs the Playwright suite on them before they are merged.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    target-branch: dev
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: America/Chicago
+    open-pull-requests-limit: 5
+    groups:
+      # One PR for all minor and patch bumps; majors get their own PR for review.
+      minor-and-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: deps
+
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: dev
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+      timezone: America/Chicago
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci
