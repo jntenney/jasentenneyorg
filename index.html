@@ -6,6 +6,8 @@
   <link rel="icon" href="/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jasen Tenney</title>
+  <!-- The site also answers at www.; tell search engines the apex domain is the one to index. -->
+  <link rel="canonical" href="https://jasentenney.org/" />
 
   <meta name="description"
     content="Jasen Tenney is an applied AI full-stack engineer and technical lead who builds agentic AI products that take LLM workflows from concept to production." />
@@ -27,6 +29,42 @@
     content="Jasen Tenney is an applied AI full-stack engineer and technical lead who builds agentic AI products that take LLM workflows from concept to production." />
   <meta name="twitter:image" content="https://jasentenney.org/siteimage.jpg" />
   <meta name="twitter:image:alt" content="Jasen Tenney's homepage: applied AI full-stack engineer and technical lead" />
+
+  <!-- Structured data: tells search engines this page is about a person and links the profiles. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Jasen Tenney",
+    "jobTitle": "Applied AI Full-Stack Engineer and Technical Lead",
+    "description": "Applied AI full-stack engineer and technical lead who builds agentic AI products that take LLM workflows from concept to production.",
+    "url": "https://jasentenney.org/",
+    "email": "mailto:jasen.tenney@gmail.com",
+    "image": "https://jasentenney.org/siteimage.jpg",
+    "sameAs": [
+      "https://www.linkedin.com/in/jasentenney/",
+      "https://github.com/jntenney"
+    ],
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Improving"
+    },
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "University of Louisiana at Lafayette"
+    },
+    "knowsAbout": [
+      "Applied AI",
+      "Large language models",
+      "Agentic AI systems",
+      "Retrieval-augmented generation",
+      "React",
+      ".NET",
+      "Python",
+      "Azure"
+    ]
+  }
+  </script>
 
   <!-- Preload the first two backgrounds at the same width tier src/App.vue will request. -->
   <link rel="preload" as="image" media="(max-width: 540px)"
