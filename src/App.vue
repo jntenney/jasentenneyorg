@@ -178,6 +178,9 @@ function gotoSection(index, direction) {
     );
 
   currentIndex.value = index;
+
+  // Warm the next background image so the following slide never paints without one.
+  new Image().src = bgImages.value[scrollCount.value % bgImages.value.length];
 }
 </script>
 
