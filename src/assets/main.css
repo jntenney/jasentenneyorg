@@ -27,7 +27,6 @@ h2 {
   text-align: center;
   letter-spacing: 0.5em;
   margin-right: -0.5em;
-  color: hsl(0, 0, 80%);
   width: 90vw;
   max-width: 1200px;
 }
@@ -38,7 +37,6 @@ h1 {
   text-align: center;
   letter-spacing: 0.4em;
   margin-right: -0.4em;
-  color: hsl(0, 0, 80%);
   width: 90vw;
   max-width: 1200px;
 }
