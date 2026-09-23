@@ -1,6 +1,6 @@
 {
   "name": "jasentenneyorg",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "gsap": "file:gsap-bonus.tgz",
+    "gsap": "^3.15.0",
     "vue": "^3.5.11"
   },
   "devDependencies": {

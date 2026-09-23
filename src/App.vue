@@ -37,6 +37,13 @@ const bgImages = ref([
 
 const scrollCount = ref(0);
 
+// Respect the OS "reduce motion" setting: slides still change, but without the parallax and
+// per-character entrance animations.
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const motion = reduceMotion
+  ? { duration: 0, charDuration: 0, staggerAmount: 0, charDelay: 0 }
+  : { duration: 1.25, charDuration: 1, staggerAmount: 0.6, charDelay: 0.2 };
+
 onMounted(async () => {
   await nextTick();
   sections.value = document.querySelectorAll('section');
@@ -65,16 +72,31 @@ onMounted(async () => {
     preventDefault: true,
   });
 
+  window.addEventListener('keydown', onKeyDown);
+
   gotoSection(0, 1);
 });
 
 onUnmounted(() => {
+  window.removeEventListener('keydown', onKeyDown);
   observerInstance.kill();
   splitHeadings.value.forEach((split) => split.revert());
   splitContinueScrollings.value.forEach((split) => split.revert());
 });
 
 const wrap = (index, max) => (index + max) % max;
+
+// Keyboard navigation: mirrors the Observer wheel behaviour (down = next slide, up = previous slide).
+function onKeyDown(event) {
+  const next = ['ArrowDown', 'PageDown'].includes(event.key) || (event.key === ' ' && !event.shiftKey);
+  const prev = ['ArrowUp', 'PageUp'].includes(event.key) || (event.key === ' ' && event.shiftKey);
+  if (!next && !prev) return;
+
+  event.preventDefault();
+  if (animating.value) return;
+
+  gotoSection(currentIndex.value + (next ? 1 : -1), next ? 1 : -1);
+}
 
 // Initial inspiration from https://codepen.io/BrianCross/pen/PoWapLP, then heavily modified by me for use in Vue, multiple background images, and other tweaks.
 function gotoSection(index, direction) {
@@ -104,7 +126,7 @@ function gotoSection(index, direction) {
   let fromTop = direction === -1,
     dFactor = fromTop ? -1 : 1,
     tl = gsap.timeline({
-      defaults: { duration: 1.25, ease: 'power1.inOut' },
+      defaults: { duration: motion.duration, ease: 'power1.inOut' },
       onComplete: () => (animating.value = false),
     });
   if (currentIndex.value >= 0) {
@@ -134,14 +156,14 @@ function gotoSection(index, direction) {
       {
         autoAlpha: 1,
         yPercent: 0,
-        duration: 1,
+        duration: motion.charDuration,
         ease: 'power2',
         stagger: {
-          each: 0.02,
+          amount: motion.staggerAmount,
           from: 'random',
         },
       },
-      0.2
+      motion.charDelay
     )
     .fromTo(
       splitContinueScrollings.value[index].chars,
@@ -152,17 +174,20 @@ function gotoSection(index, direction) {
       {
         autoAlpha: 1,
         yPercent: 0,
-        duration: 1,
+        duration: motion.charDuration,
         ease: 'power2',
         stagger: {
-          each: 0.02,
+          amount: motion.staggerAmount,
           from: 'random',
         },
       },
-      0.2
+      motion.charDelay
     );
 
   currentIndex.value = index;
+
+  // Warm the next background image so the following slide never paints without one.
+  new Image().src = bgImages.value[scrollCount.value % bgImages.value.length];
 }
 </script>
 
