@@ -152,7 +152,7 @@ function gotoSection(index, direction) {
         duration: 1,
         ease: 'power2',
         stagger: {
-          each: 0.02,
+          amount: 0.6,
           from: 'random',
         },
       },
@@ -170,7 +170,7 @@ function gotoSection(index, direction) {
         duration: 1,
         ease: 'power2',
         stagger: {
-          each: 0.02,
+          amount: 0.6,
           from: 'random',
         },
       },
