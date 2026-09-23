@@ -11,17 +11,17 @@
       </a>
     </div>
     <div>
-      <a href="mailto:jasen.tenney@gmail.com" target="_blank" title="Email Jasen" aria-label="Email Jasen">
+      <a href="mailto:jasen.tenney@gmail.com" title="Email Jasen" aria-label="Email Jasen">
         <img src="/email.svg" alt="" width="30" height="30" />
       </a>
     </div>
     <div>
-      <a href="https://www.linkedin.com/in/jasentenney/" target="_blank" title="LinkedIn profile" aria-label="LinkedIn profile">
+      <a href="https://www.linkedin.com/in/jasentenney/" target="_blank" rel="noopener" title="LinkedIn profile" aria-label="LinkedIn profile">
         <img src="/linkedin.svg" alt="" width="30" height="30" />
       </a>
     </div>
     <div>
-      <a href="https://github.com/jntenney" target="_blank" title="GitHub profile" aria-label="GitHub profile">
+      <a href="https://github.com/jntenney" target="_blank" rel="noopener" title="GitHub profile" aria-label="GitHub profile">
         <img src="/github.svg" alt="" width="30" height="30" />
       </a>
     </div>
