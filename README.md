@@ -36,7 +36,11 @@ npm run dev
 npm run build
 ```
 
-### Deploy to AWS S3 using CLI
+### Deploy
+
+Merging `dev` into `main` deploys the site automatically: the [Deploy Website](.github/workflows/main.yml) GitHub Actions workflow builds it, uploads it to S3, and invalidates CloudFront. It can also be run by hand from the Actions tab.
+
+### Deploy to AWS S3 using CLI (manual fallback)
 
 Upload the build to S3 with cache headers, then invalidate the CloudFront cache so the new files are served right away.
 
