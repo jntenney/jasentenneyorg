@@ -37,6 +37,13 @@ const bgImages = ref([
 
 const scrollCount = ref(0);
 
+// Respect the OS "reduce motion" setting: slides still change, but without the parallax and
+// per-character entrance animations.
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const motion = reduceMotion
+  ? { duration: 0, charDuration: 0, staggerAmount: 0, charDelay: 0 }
+  : { duration: 1.25, charDuration: 1, staggerAmount: 0.6, charDelay: 0.2 };
+
 onMounted(async () => {
   await nextTick();
   sections.value = document.querySelectorAll('section');
@@ -119,7 +126,7 @@ function gotoSection(index, direction) {
   let fromTop = direction === -1,
     dFactor = fromTop ? -1 : 1,
     tl = gsap.timeline({
-      defaults: { duration: 1.25, ease: 'power1.inOut' },
+      defaults: { duration: motion.duration, ease: 'power1.inOut' },
       onComplete: () => (animating.value = false),
     });
   if (currentIndex.value >= 0) {
@@ -149,14 +156,14 @@ function gotoSection(index, direction) {
       {
         autoAlpha: 1,
         yPercent: 0,
-        duration: 1,
+        duration: motion.charDuration,
         ease: 'power2',
         stagger: {
-          amount: 0.6,
+          amount: motion.staggerAmount,
           from: 'random',
         },
       },
-      0.2
+      motion.charDelay
     )
     .fromTo(
       splitContinueScrollings.value[index].chars,
@@ -167,14 +174,14 @@ function gotoSection(index, direction) {
       {
         autoAlpha: 1,
         yPercent: 0,
-        duration: 1,
+        duration: motion.charDuration,
         ease: 'power2',
         stagger: {
-          amount: 0.6,
+          amount: motion.staggerAmount,
           from: 'random',
         },
       },
-      0.2
+      motion.charDelay
     );
 
   currentIndex.value = index;
