@@ -71,6 +71,18 @@ The commands use the default AWS CLI profile. If its credentials have expired, s
 aws sso login --profile jntaws-production
 ```
 
+## Infrastructure notes
+
+The site is an S3 bucket behind a CloudFront distribution. Security headers (HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, and a `Content-Security-Policy`) are added by a CloudFront response headers policy attached to the default cache behavior. The policy is kept in [infra/cloudfront-response-headers-policy.json](infra/cloudfront-response-headers-policy.json); to change a header, edit that file and update the policy:
+
+```sh
+aws cloudfront update-response-headers-policy --id 85ee901e-b1b5-4faa-90aa-7857af69a297 --if-match "$(aws cloudfront get-response-headers-policy --id 85ee901e-b1b5-4faa-90aa-7857af69a297 --query ETag --output text)" --response-headers-policy-config file://infra/cloudfront-response-headers-policy.json
+```
+
+If you add a new external origin for scripts, styles, fonts, or images, add it to the `Content-Security-Policy` there first or the browser will block it.
+
+Dependabot ([.github/dependabot.yml](.github/dependabot.yml)) opens weekly pull requests against `dev` for npm packages and GitHub Actions; the Test workflow runs the Playwright suite on them.
+
 ## Updating the resume
 
 1. Drop the new PDF into `public/` and remove the old one.
