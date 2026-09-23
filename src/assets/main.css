@@ -3,7 +3,6 @@
 
 * {
   box-sizing: border-box;
-  user-select: none;
 }
 
 a {
@@ -84,6 +83,7 @@ section {
   top: 0;
   position: fixed;
   visibility: hidden;
+  user-select: none;
 
   .outer,
   .inner {
