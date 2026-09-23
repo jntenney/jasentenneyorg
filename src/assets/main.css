@@ -94,6 +94,7 @@ section {
 
   .bg {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: absolute;
@@ -116,4 +117,43 @@ section {
 h1 *,
 h2 * {
   will-change: transform;
+}
+
+/* One-line caption under each topic heading, in the same small type as the scroll hint. */
+.section-caption {
+  z-index: 2;
+  margin: 1.5em 0 0;
+  width: 90vw;
+  max-width: 900px;
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(0.8rem, 1.6vw, 1.1rem);
+  letter-spacing: 0.2em;
+  line-height: 1.8;
+  color: hsl(0, 0%, 88%);
+  visibility: hidden; /* revealed by the slide animation */
+}
+
+.caption-links {
+  display: block;
+  margin-top: 0.6em;
+}
+
+.caption-links a {
+  display: inline-block;
+  margin: 0 1em;
+  padding-bottom: 0.15em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  transition: border-color 0.2s;
+}
+
+.caption-links a:hover,
+.caption-links a:focus-visible {
+  border-bottom-color: #fff;
+  outline: none;
+}
+
+.caption-links a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
 }

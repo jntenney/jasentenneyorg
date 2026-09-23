@@ -12,6 +12,7 @@ const sections = ref([]);
 const images = ref([]);
 const headings = ref([]);
 const continueScrollings = ref([]);
+const captions = ref([]); // one entry per section; null where a slide has no caption
 const outerWrappers = ref([]);
 const innerWrappers = ref([]);
 const splitHeadings = ref([]);
@@ -63,6 +64,7 @@ onMounted(async () => {
   images.value = document.querySelectorAll('.bg');
   headings.value = gsap.utils.toArray('.section-heading');
   continueScrollings.value = gsap.utils.toArray('.continue-scrolling');
+  captions.value = [...sections.value].map((section) => section.querySelector('.section-caption'));
   outerWrappers.value = gsap.utils.toArray('.outer');
   innerWrappers.value = gsap.utils.toArray('.inner');
   splitHeadings.value = headings.value.map(
@@ -222,6 +224,16 @@ function gotoSection(index, direction) {
       },
       motion.charDelay
     );
+
+  // The caption fades up as a whole once the heading's characters are mostly in.
+  if (captions.value[index]) {
+    tl.fromTo(
+      captions.value[index],
+      { autoAlpha: 0, yPercent: 40 * dFactor },
+      { autoAlpha: 1, yPercent: 0, duration: motion.charDuration, ease: 'power2' },
+      motion.charDelay + motion.staggerAmount * 0.5
+    );
+  }
 
   // The character entrance runs past the slide movement; unlock input when the slide itself has settled.
   tl.add(onSlideSettled, motion.duration);
