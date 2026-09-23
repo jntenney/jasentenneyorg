@@ -19,6 +19,8 @@ const splitContinueScrollings = ref([]);
 
 let currentIndex = ref(-1);
 const animating = ref(false);
+// Direction (+1 / -1) of a key press that arrived mid-transition; replayed once the slide settles.
+let pendingDirection = 0;
 
 let observerInstance = null;
 const bgImages = ref([
@@ -93,9 +95,23 @@ function onKeyDown(event) {
   if (!next && !prev) return;
 
   event.preventDefault();
-  if (animating.value) return;
+  const direction = next ? 1 : -1;
+  if (animating.value) {
+    pendingDirection = direction;
+    return;
+  }
 
-  gotoSection(currentIndex.value + (next ? 1 : -1), next ? 1 : -1);
+  gotoSection(currentIndex.value + direction, direction);
+}
+
+// Called when the slide movement finishes: accept input again and replay a queued key press.
+function onSlideSettled() {
+  animating.value = false;
+  if (pendingDirection) {
+    const direction = pendingDirection;
+    pendingDirection = 0;
+    gotoSection(currentIndex.value + direction, direction);
+  }
 }
 
 // Initial inspiration from https://codepen.io/BrianCross/pen/PoWapLP, then heavily modified by me for use in Vue, multiple background images, and other tweaks.
@@ -127,8 +143,9 @@ function gotoSection(index, direction) {
     dFactor = fromTop ? -1 : 1,
     tl = gsap.timeline({
       defaults: { duration: motion.duration, ease: 'power1.inOut' },
-      onComplete: () => (animating.value = false),
     });
+  // The character entrance runs past the slide movement; unlock input when the slide itself has settled.
+  tl.add(onSlideSettled, motion.duration);
   if (currentIndex.value >= 0) {
     gsap.set(sections.value[currentIndex.value], { zIndex: 0 });
     tl.to(images.value[currentIndex.value], { yPercent: -15 * dFactor }).set(sections.value[currentIndex.value], {
