@@ -1,6 +1,6 @@
-# jasentenney.org - v1.0.0
+# jasentenney.org - v1.1.0
 
-The first iteration of my personal website, [jasentenney.org](https://jasentenney.org/), built with [Vue](https://vuejs.org/), [GSAP Premium](https://gsap.com/) and hosted on [AWS (S3, CloudFront)](https://aws.amazon.com/).
+My personal website, [jasentenney.org](https://jasentenney.org/), built with [Vue](https://vuejs.org/) and [GSAP](https://gsap.com/) and hosted on [AWS (S3, CloudFront)](https://aws.amazon.com/). It is a single page of full-screen slides: scroll, swipe, or use the arrow keys to move between them. The header links to my resume (PDF), email, LinkedIn, and GitHub.
 
 ## Homepage Screenshot
 
@@ -41,3 +41,11 @@ npm run build
 ```sh
 aws s3 sync dist s3://jasentenney.org --delete
 ```
+
+## Updating the resume
+
+1. Drop the new PDF into `public/` and remove the old one.
+2. Point both resume links in `src/components/HeaderSection.vue` at the new file name.
+3. Update the hero sentence in `src/components/HeroSection.vue` and the three description meta tags in `index.html` if the summary changed.
+4. Regenerate `public/siteimage.png` (the social preview) from the hero at a 1200x630 viewport, and the screenshot and GIF in `docs/`.
+5. Build and deploy.
