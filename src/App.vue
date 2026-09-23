@@ -21,6 +21,10 @@ let currentIndex = ref(-1);
 const animating = ref(false);
 // Direction (+1 / -1) of a key press that arrived mid-transition; replayed once the slide settles.
 let pendingDirection = 0;
+// The transition currently playing and the slide it is moving away from, so a new transition can
+// finish its cleanup if it starts before the previous one has fully ended.
+let activeTimeline = null;
+let outgoingIndex = -1;
 
 let observerInstance = null;
 const bgImages = ref([
@@ -119,6 +123,18 @@ function gotoSection(index, direction) {
   index = wrap(index, sections.value.length);
   animating.value = true;
 
+  // Input is accepted as soon as the slide settles, while the previous transition may still be
+  // finishing its text animation and its deferred "hide the outgoing slide" step. Stop it and apply
+  // that hide now, unless the outgoing slide is exactly where we are heading back to.
+  if (activeTimeline) {
+    activeTimeline.kill();
+    activeTimeline = null;
+    if (outgoingIndex >= 0 && outgoingIndex !== index) {
+      gsap.set(sections.value[outgoingIndex], { autoAlpha: 0, zIndex: 0 });
+    }
+  }
+  outgoingIndex = currentIndex.value;
+
   if (scrollCount.value < bgImages.value.length) {
     const newBgImage = bgImages.value[scrollCount.value];
 
@@ -144,8 +160,7 @@ function gotoSection(index, direction) {
     tl = gsap.timeline({
       defaults: { duration: motion.duration, ease: 'power1.inOut' },
     });
-  // The character entrance runs past the slide movement; unlock input when the slide itself has settled.
-  tl.add(onSlideSettled, motion.duration);
+  activeTimeline = tl;
   if (currentIndex.value >= 0) {
     gsap.set(sections.value[currentIndex.value], { zIndex: 0 });
     tl.to(images.value[currentIndex.value], { yPercent: -15 * dFactor }).set(sections.value[currentIndex.value], {
@@ -200,6 +215,9 @@ function gotoSection(index, direction) {
       },
       motion.charDelay
     );
+
+  // The character entrance runs past the slide movement; unlock input when the slide itself has settled.
+  tl.add(onSlideSettled, motion.duration);
 
   currentIndex.value = index;
 
