@@ -38,8 +38,17 @@ npm run build
 
 ### Deploy to AWS S3 using CLI
 
+Upload the build to S3, then invalidate the CloudFront cache so the new files are served right away.
+
 ```sh
 aws s3 sync dist s3://jasentenney.org --delete
+aws cloudfront create-invalidation --distribution-id E195H7URUI6VMD --paths "/*"
+```
+
+The commands use the default AWS CLI profile. If its credentials have expired, sign in with SSO and add `--profile jntaws-production` to both commands:
+
+```sh
+aws sso login --profile jntaws-production
 ```
 
 ## Updating the resume
