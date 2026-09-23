@@ -65,16 +65,31 @@ onMounted(async () => {
     preventDefault: true,
   });
 
+  window.addEventListener('keydown', onKeyDown);
+
   gotoSection(0, 1);
 });
 
 onUnmounted(() => {
+  window.removeEventListener('keydown', onKeyDown);
   observerInstance.kill();
   splitHeadings.value.forEach((split) => split.revert());
   splitContinueScrollings.value.forEach((split) => split.revert());
 });
 
 const wrap = (index, max) => (index + max) % max;
+
+// Keyboard navigation: mirrors the Observer wheel behaviour (down = next slide, up = previous slide).
+function onKeyDown(event) {
+  const next = ['ArrowDown', 'PageDown'].includes(event.key) || (event.key === ' ' && !event.shiftKey);
+  const prev = ['ArrowUp', 'PageUp'].includes(event.key) || (event.key === ' ' && event.shiftKey);
+  if (!next && !prev) return;
+
+  event.preventDefault();
+  if (animating.value) return;
+
+  gotoSection(currentIndex.value + (next ? 1 : -1), next ? 1 : -1);
+}
 
 // Initial inspiration from https://codepen.io/BrianCross/pen/PoWapLP, then heavily modified by me for use in Vue, multiple background images, and other tweaks.
 function gotoSection(index, direction) {
