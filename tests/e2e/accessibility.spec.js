@@ -70,14 +70,14 @@ test('document head: title, descriptions, preview image tags and a single h1', a
     expect(content, selector).toContain(description);
   }
 
-  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://jasentenney.org/siteimage.png');
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://jasentenney.org/siteimage.jpg');
   await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute('content', '2400');
   await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute('content', '1260');
   await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute('content', /.+/);
   await expect(page.locator('meta[name="twitter:image:alt"]')).toHaveAttribute('content', /.+/);
 
   // The preview image itself is served.
-  const image = await page.request.get('/siteimage.png');
+  const image = await page.request.get('/siteimage.jpg');
   expect(image.status()).toBe(200);
 });
 
@@ -90,7 +90,15 @@ test('text outside the slides can be selected', async ({ page }) => {
 
 test('phone viewport: hero fits with no horizontal overflow', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 700 });
+  const imageRequests = [];
+  page.on('request', (r) => {
+    if (r.url().includes('images.unsplash.com')) imageRequests.push(r.url());
+  });
   await openSite(page);
+
+  // Phones get the 1080px rendition, never the desktop 1920px one.
+  expect(imageRequests.length).toBeGreaterThan(0);
+  for (const url of imageRequests) expect(url, 'phone image width').toContain('w=1080');
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);

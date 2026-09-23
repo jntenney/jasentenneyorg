@@ -76,5 +76,5 @@ aws sso login --profile jntaws-production
 1. Drop the new PDF into `public/` and remove the old one.
 2. Point both resume links in `src/components/HeaderSection.vue` at the new file name.
 3. Update the hero sentence in `src/components/HeroSection.vue` and the three description meta tags in `index.html` if the summary changed.
-4. Regenerate `public/siteimage.png` (the social preview) from the hero at a 1200x630 viewport, and the screenshot and GIF in `docs/`.
+4. Regenerate `public/siteimage.jpg` (the social preview) from the hero at a 1200x630 viewport, and the screenshot and GIF in `docs/`.
 5. Build and deploy.

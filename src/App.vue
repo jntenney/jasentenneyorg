@@ -27,6 +27,13 @@ let activeTimeline = null;
 let outgoingIndex = -1;
 
 let observerInstance = null;
+
+// Unsplash resizes on request, so ask for a rendition sized to the viewport instead of always 1920px.
+// The tiers match the media queries on the preload links in index.html so the preloaded files are the
+// ones actually used.
+const imageWidth = window.innerWidth <= 540 ? 1080 : window.innerWidth <= 960 ? 1440 : 1920;
+const sizedForViewport = (url) => url.replace('w=1920', `w=${imageWidth}`);
+
 const bgImages = ref([
   'https://images.unsplash.com/photo-1617478755490-e21232a5eeaf?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
   'https://images.unsplash.com/photo-1617128734662-66da6c1d3505?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
@@ -39,7 +46,7 @@ const bgImages = ref([
   'https://images.unsplash.com/photo-1704115859446-601dfae181c2?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
   'https://images.unsplash.com/photo-1728237646970-e73938b2c1d1?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
   'https://images.unsplash.com/photo-1728155253434-262ab74ef031?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYxNzU1NjM5NA&ixlib=rb-1.2.1&q=75&w=1920',
-]);
+].map(sizedForViewport));
 
 const scrollCount = ref(0);
 
