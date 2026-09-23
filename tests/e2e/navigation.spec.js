@@ -9,6 +9,11 @@ test.describe('slide navigation', () => {
   test('arrow keys visit every slide in order and wrap around', async ({ page }) => {
     expect(await currentSlide(page)).toBe('first');
 
+    const imageRequests = [];
+    page.on('request', (r) => {
+      if (r.url().includes('images.unsplash.com')) imageRequests.push(r.url());
+    });
+
     for (const expected of SLIDES.slice(1)) {
       await pressAndSettle(page, 'ArrowDown');
       const state = await visibilityState(page);
@@ -16,6 +21,10 @@ test.describe('slide navigation', () => {
       expect(state.topShown).toBe(true);
       expect(state.topHasImage).toBe(true);
     }
+
+    // Desktop viewports get the full 1920px renditions.
+    expect(imageRequests.length).toBeGreaterThan(0);
+    for (const url of imageRequests) expect(url, 'desktop image width').toContain('w=1920');
 
     await pressAndSettle(page, 'ArrowDown');
     expect(await currentSlide(page)).toBe('first');
