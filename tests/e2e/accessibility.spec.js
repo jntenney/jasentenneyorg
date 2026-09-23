@@ -81,6 +81,30 @@ test('document head: title, descriptions, preview image tags and a single h1', a
   expect(image.status()).toBe(200);
 });
 
+test('canonical URL and structured data identify the page and person', async ({ page }) => {
+  await openSite(page);
+
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://jasentenney.org/');
+
+  const blocks = page.locator('script[type="application/ld+json"]');
+  await expect(blocks).toHaveCount(1);
+  const person = JSON.parse(await blocks.first().textContent());
+
+  expect(person['@context']).toBe('https://schema.org');
+  expect(person['@type']).toBe('Person');
+  expect(person.name).toBe('Jasen Tenney');
+  expect(person.jobTitle).toMatch(/applied ai/i);
+  expect(person.url).toBe('https://jasentenney.org/');
+  expect(person.image).toBe('https://jasentenney.org/siteimage.jpg');
+  expect(person.sameAs).toEqual(
+    expect.arrayContaining(['https://www.linkedin.com/in/jasentenney/', 'https://github.com/jntenney'])
+  );
+
+  // The profiles in the structured data are the same ones the header links to.
+  const headerHrefs = await page.locator('header a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  for (const profile of person.sameAs) expect(headerHrefs).toContain(profile);
+});
+
 test('text outside the slides can be selected', async ({ page }) => {
   await openSite(page);
   const userSelect = (selector) => page.evaluate((s) => getComputedStyle(document.querySelector(s)).userSelect, selector);
