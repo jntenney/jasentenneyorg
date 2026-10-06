@@ -1,8 +1,8 @@
 name: Test
 
-# Runs the Playwright suite against the Vite dev server on every push to dev and every pull
-# request into dev or main (Dependabot's PRs target dev). The deploy workflow runs the same
-# suite again before deploying.
+# Runs the Playwright suite (one parallel job per browser project) on every push to dev and every
+# pull request into dev or main (Dependabot's PRs target dev). The deploy workflow runs the same
+# jobs again before deploying.
 on:
   push:
     branches: [ dev ]
@@ -12,7 +12,18 @@ on:
 
 jobs:
   test:
+    # One runner per Playwright project, in parallel. The tests inside a project run one at a time
+    # because several measure timing; separate runners keep that true without serialising the projects.
+    name: test (${{ matrix.project }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { project: chromium, browser: chromium }
+          - { project: firefox, browser: firefox }
+          - { project: webkit-iphone, browser: webkit }
+          - { project: chromium-android, browser: chromium }
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
@@ -26,16 +37,16 @@ jobs:
       - name: Install Modules
         run: npm ci
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium webkit
+      - name: Install Playwright Browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run Playwright Tests
-        run: npm test
+        run: npx playwright test --project ${{ matrix.project }}
 
       - name: Upload Test Report
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.project }}
           path: playwright-report/
           retention-days: 14

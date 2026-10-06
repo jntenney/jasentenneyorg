@@ -164,3 +164,9 @@ dist
 # Playwright
 test-results/
 playwright-report/
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
+
+# Claude Code: personal overrides (shared config in .claude/settings.json and CLAUDE.md is committed)
+.claude/settings.local.json
+CLAUDE.local.md
