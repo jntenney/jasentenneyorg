@@ -5,8 +5,8 @@ import { SETTLE_MS } from './helpers.js';
 // ran the app before main.css (and its Google Fonts @imports) was applied, so SplitText measured
 // unstyled headings and froze those line breaks and a left text-align into its line elements.
 // Each test gets a fresh browser context, so the cache is always cold; the font hosts are slowed
-// down further to mimic a mobile network. Runs in the cold-load-webkit and cold-load-chromium
-// projects against a production build (see playwright.config.js).
+// down further to mimic a mobile network. Runs in the webkit-iphone and chromium-android projects
+// against a production build (see playwright.config.js).
 
 const FONT_HOSTS = /fonts\.(googleapis|gstatic)\.com/;
 const FONT_DELAY_MS = 1500;

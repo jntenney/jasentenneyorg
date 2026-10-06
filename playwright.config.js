@@ -11,6 +11,8 @@ const usesLocalServers = !process.env.BASE_URL;
 const devURL = process.env.BASE_URL || 'http://localhost:5173';
 const buildURL = process.env.BASE_URL || 'http://localhost:4173';
 const coldLoad = /cold-load\.spec\.js/;
+// Production-only checks (security and cache headers, CSP); they skip themselves unless BASE_URL is set.
+const production = /production\.spec\.js/;
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -24,10 +26,15 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   projects: [
+    // The main suite, desktop Chromium against the dev server (plus the production checks).
     { name: 'chromium', testIgnore: coldLoad, use: { ...devices['Desktop Chrome'], baseURL: devURL } },
     // Safari's engine on an iPhone-sized screen, where the first-load bug was seen.
-    { name: 'cold-load-webkit', testMatch: coldLoad, use: { ...devices['iPhone 13'], baseURL: buildURL } },
-    { name: 'cold-load-chromium', testMatch: coldLoad, use: { ...devices['Pixel 7'], baseURL: buildURL } },
+    {
+      name: 'webkit-iphone',
+      testMatch: [coldLoad, production],
+      use: { ...devices['iPhone 13'], baseURL: buildURL },
+    },
+    { name: 'chromium-android', testMatch: coldLoad, use: { ...devices['Pixel 7'], baseURL: buildURL } },
   ],
   webServer: usesLocalServers
     ? [

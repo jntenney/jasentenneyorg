@@ -52,17 +52,29 @@ npm run preview   # serve the production build locally
 
 The end-to-end suite in `tests/e2e/` drives the site in headless browsers. The main suite runs in Chromium against the Vite dev server and covers: slide order by keyboard and wheel, input timing and queued key presses, a seeded random fast-input stress test for the blank-slide regression, captions and the CoDeveloper link, reduced motion, header links and accessible names, head metadata and structured data, text selection, the phone viewport, and the image width requested per viewport.
 
-The cold-load test (`cold-load.spec.js`) guards the first-visit layout bug seen on iPhone: on a cold cache, Safari could run the app before the stylesheet and fonts were applied, so the headings were split into left-aligned lines with the wrong breaks. It loads a fresh production build with a cold cache and slowed font hosts, then checks every heading line is centred and one row tall. It runs twice, as an emulated iPhone in WebKit (`cold-load-webkit`) and as an emulated Android phone in Chromium (`cold-load-chromium`), against a production build that Playwright creates with `vite preview` on port 4173. Playwright starts both servers itself.
+The cold-load test (`cold-load.spec.js`) guards the first-visit layout bug seen on iPhone: on a cold cache, Safari could run the app before the stylesheet and fonts were applied, so the headings were split into left-aligned lines with the wrong breaks. It loads a fresh production build with a cold cache and slowed font hosts, then checks every heading line is centred and one row tall. It runs twice, as an emulated iPhone in WebKit (`webkit-iphone`) and as an emulated Android phone in Chromium (`chromium-android`), against a production build that Playwright creates with `vite preview` on port 4173. Playwright starts both servers itself.
+
+The production checks (`production.spec.js`) only run when `BASE_URL` is set, because they test what CloudFront and the deploy add. They verify that the security headers on every kind of file match the policy in `infra/`, that cache headers are right for `index.html`, the hashed assets and the other files, that the apex and www hostnames serve the same page, and that a full tour raises no CSP violations. They run in desktop Chromium and iPhone WebKit.
 
 ```sh
 npx playwright install chromium webkit   # once
 npm test                                 # dev server + fresh production build
 npm run test:headed                      # same, with visible browsers
-npm run test:prod                        # every test against https://jasentenney.org
-npx playwright test --project cold-load-webkit   # just the iPhone cold-load check
+npm run test:prod                        # every test, plus the production checks, against https://jasentenney.org
+npx playwright test --project webkit-iphone   # just the iPhone checks
 ```
 
 `BASE_URL=<url> npm test` runs the suite against any deployed copy. Tests run one at a time because several of them measure timing.
+
+## Working with Claude Code
+
+The repo is set up for [Claude Code](https://claude.com/claude-code):
+
+- [CLAUDE.md](CLAUDE.md) covers commands, the shipping workflow, the load-bearing parts of the slide engine, infrastructure and content decisions.
+- [.claude/settings.json](.claude/settings.json) sets shared permissions. Editing, testing, building, committing, pushing to `dev` and read-only GitHub and AWS checks run without prompts. Merging into `main`, pushing to `main`, re-running or dispatching workflows and any AWS write always ask first. Destructive AWS operations and reading AWS credentials are denied.
+- The `/ship` skill ([.claude/skills/ship](.claude/skills/ship/SKILL.md)) pushes `dev`, opens and merges the pull request, watches the deploy and validates production.
+- The `playwright-cli` skill ([.claude/skills/playwright-cli](.claude/skills/playwright-cli/SKILL.md)) lets Claude drive a browser interactively with `npx playwright cli`, which ships with Playwright. It was installed with `npx playwright cli install --skills`; rerun that after upgrading Playwright.
+- Personal overrides go in `.claude/settings.local.json` or `CLAUDE.local.md`, both gitignored.
 
 ## Branches, workflows and releases
 
