@@ -25,8 +25,8 @@ jobs:
       - name: Install Modules
         run: npm ci
 
-      - name: Install Playwright Browser
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium webkit
 
       - name: Run Playwright Tests
         run: npm test

@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond&display=swap');
 
+/* Sentinel read by waitForStylesAndFonts() in App.vue. It only becomes visible to scripts once this
+   stylesheet, including the Google Fonts @imports above, has been applied. */
+:root {
+  --styles-ready: 1;
+}
+
 * {
   box-sizing: border-box;
 }

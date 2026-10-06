@@ -50,13 +50,16 @@ npm run preview   # serve the production build locally
 
 ## Tests
 
-The end-to-end suite in `tests/e2e/` drives the site in headless Chromium and covers: slide order by keyboard and wheel, input timing and queued key presses, a seeded random fast-input stress test for the blank-slide regression, captions and the CoDeveloper link, reduced motion, header links and accessible names, head metadata and structured data, text selection, the phone viewport, and the image width requested per viewport. Playwright starts the Vite dev server itself.
+The end-to-end suite in `tests/e2e/` drives the site in headless browsers. The main suite runs in Chromium against the Vite dev server and covers: slide order by keyboard and wheel, input timing and queued key presses, a seeded random fast-input stress test for the blank-slide regression, captions and the CoDeveloper link, reduced motion, header links and accessible names, head metadata and structured data, text selection, the phone viewport, and the image width requested per viewport.
+
+The cold-load test (`cold-load.spec.js`) guards the first-visit layout bug seen on iPhone: on a cold cache, Safari could run the app before the stylesheet and fonts were applied, so the headings were split into left-aligned lines with the wrong breaks. It loads a fresh production build with a cold cache and slowed font hosts, then checks every heading line is centred and one row tall. It runs twice, as an emulated iPhone in WebKit (`cold-load-webkit`) and as an emulated Android phone in Chromium (`cold-load-chromium`), against a production build that Playwright creates with `vite preview` on port 4173. Playwright starts both servers itself.
 
 ```sh
-npx playwright install chromium   # once
-npm test                          # against the local dev server
-npm run test:headed               # same, with a visible browser
-npm run test:prod                 # the same suite against https://jasentenney.org
+npx playwright install chromium webkit   # once
+npm test                                 # dev server + fresh production build
+npm run test:headed                      # same, with visible browsers
+npm run test:prod                        # every test against https://jasentenney.org
+npx playwright test --project cold-load-webkit   # just the iPhone cold-load check
 ```
 
 `BASE_URL=<url> npm test` runs the suite against any deployed copy. Tests run one at a time because several of them measure timing.

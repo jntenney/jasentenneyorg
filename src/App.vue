@@ -58,8 +58,33 @@ const motion = reduceMotion
   ? { duration: 0, charDuration: 0, staggerAmount: 0, charDelay: 0 }
   : { duration: 1.25, charDuration: 1, staggerAmount: 0.6, charDelay: 0.2 };
 
+// SplitText measures line breaks once and copies the heading's text-align onto each line, so it
+// must run against the final styles and fonts. On a cold cache, Safari can run this module before
+// main.css is applied (the sheet waits on its Google Fonts @imports), and any browser can run it
+// before the web fonts arrive. document.fonts.ready alone is not enough: until main.css is applied
+// there are no @font-face rules, so it resolves immediately. Wait for main.css's sentinel first,
+// then for the two fonts, each with a cap so a slow or blocked font host never hangs the page.
+async function waitForStylesAndFonts() {
+  const stylesDeadline = performance.now() + 5000;
+  const stylesApplied = () =>
+    getComputedStyle(document.documentElement).getPropertyValue('--styles-ready').trim() !== '';
+  while (!stylesApplied() && performance.now() < stylesDeadline) {
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+  }
+
+  try {
+    await Promise.race([
+      Promise.all([document.fonts.load('1em "Cormorant Garamond"'), document.fonts.load('1em "Bebas Neue"')]),
+      new Promise((resolve) => setTimeout(resolve, 3000)),
+    ]);
+  } catch {
+    // A font that fails to load falls back to the next family; split with what we have.
+  }
+}
+
 onMounted(async () => {
   await nextTick();
+  await waitForStylesAndFonts();
   sections.value = document.querySelectorAll('section');
   images.value = document.querySelectorAll('.bg');
   headings.value = gsap.utils.toArray('.section-heading');
