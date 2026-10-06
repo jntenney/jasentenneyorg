@@ -45,7 +45,7 @@ GitHub has occasionally not created the push run. If none appears within 90 seco
 
 ## 4. Watch it
 
-The run takes about 5 minutes. Watch it in the background so the session stays responsive:
+The run has four parallel test jobs, `deploy`, and `verify`. `verify` waits until the live site serves this build, then runs the production, cold-load and touch checks in all four browser projects. It takes about 8 minutes in total. Watch it in the background so the session stays responsive:
 
 ```sh
 gh run watch "$run" --exit-status --interval 15 > /dev/null 2>&1; echo "exit $?"
@@ -56,6 +56,7 @@ If it fails, read `gh run view "$run" --log-failed`:
 
 - A failure in the **test** job means nothing was deployed. Fix it on dev and ship again.
 - A failure in the **deploy** job can leave the bucket partly updated. Fix forward and ship again; do not edit S3 by hand unless the user agrees.
+- A failure in the **verify** job means production is live but failed a check. Read the failing test, fix forward on dev, and ship again.
 - After a fix to a failed run, `gh run rerun --failed "$run"` reruns only the failed jobs (this asks for confirmation).
 
 ## 5. Validate production
@@ -71,7 +72,7 @@ npm run test:prod
 ```
 
 - Both hostnames must match the local build's `index.html`.
-- `npm run test:prod` must pass in full: the main suite, the WebKit iPhone cold load, and the production checks for security headers, cache headers, hostname parity and CSP.
+- The verify job must have passed. `npm run test:prod` must also pass in full: the whole suite plus the production checks for security headers, cache headers, hostname parity and CSP. In Claude sessions on this Mac, Firefox is skipped locally (`PW_SKIP_FIREFOX`); the verify job covers it.
 - For a visual check, use the playwright-cli skill, for example `npx playwright cli open https://jasentenney.org --browser webkit --device "iphone 13"` followed by `screenshot`, then `close`.
 
 ## 6. Report

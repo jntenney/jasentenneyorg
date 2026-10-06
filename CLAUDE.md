@@ -12,7 +12,7 @@ Jasen Tenney's personal site, [jasentenney.org](https://jasentenney.org/): one p
 npm run dev                  # Vite dev server, http://localhost:5173
 npm run build                # production build to dist/
 npm run preview              # serve dist/ (Playwright uses port 4173)
-npm test                     # full Playwright suite; Playwright starts dev + a fresh build itself
+npm test                     # all four Playwright projects; Playwright starts dev + a fresh build itself
 npm run test:prod            # same suite against https://jasentenney.org, plus production-only checks
 npx playwright test --project webkit-iphone      # iPhone/WebKit checks only
 npx playwright cli open <url> [--browser webkit --device "iphone 13"]   # interactive browsing (see the playwright-cli skill)
@@ -25,7 +25,7 @@ macOS has no `timeout` command; poll with a `for` loop instead. Playwright brows
 - `dev` is the default branch; all work happens there. `main` is production.
 - **Merging dev into main deploys the site.** The Deploy Website workflow runs the full suite first and deploys only if it passes. Never push to main directly.
 - Use the `ship` skill (`/ship`) for the whole routine: push dev, PR, merge, watch the deploy, validate production. Merging, workflow dispatch and any AWS write prompt for confirmation by design (`.claude/settings.json`).
-- After every deploy, run `npm run test:prod` and compare the live `index.html` with a local build (the skill does both).
+- After every deploy, the workflow's verify job checks the live site. For a full check, run `npm run test:prod` and compare the live `index.html` with a local build; the skill does both.
 - Stage files explicitly and check `git status` for untracked files before committing; never use a blind `git add -A`.
 - Commit messages end with the attribution trailer the session specifies; PR bodies end with the Claude Code line.
 
@@ -51,11 +51,14 @@ These are load-bearing; each was a real bug.
 
 ## Tests (tests/e2e)
 
-- Playwright projects:
-  - `chromium` (desktop, dev server) runs the main suite.
-  - `webkit-iphone` and `chromium-android` run `cold-load.spec.js` against a fresh production build (`vite preview`, port 4173), or against `BASE_URL`.
-  - `production.spec.js` runs in `chromium` and `webkit-iphone` but skips itself unless `BASE_URL` is set.
-- Tests run serially (`workers: 1`) because several measure timing; a full local run takes about 3.5 minutes.
+- Four Playwright projects, each with an explicit list of specs in `playwright.config.js`:
+  - `chromium` (desktop) runs against the dev server.
+  - `firefox` (desktop), `webkit-iphone` and `chromium-android` (touch) run against a fresh production build (`vite preview`, port 4173), or against `BASE_URL` when it is set.
+  - The README has a table of which specs run where.
+- `production.spec.js` skips itself unless `BASE_URL` is set. The Deploy Website workflow's verify job runs it, together with `cold-load` and `touch`, against the live site after every deploy.
+- Tests within a project run serially (`workers: 1`) because several measure timing. CI runs one parallel job per project, about 4 minutes; a full local run takes about 6 to 8 minutes.
+- **Firefox does not start inside Claude Code's command sandbox on this Mac** ("Could not find profile folder"). The gitignored `.claude/settings.local.json` sets `PW_SKIP_FIREFOX=1` for Claude sessions, so `npm test` skips the Firefox project there. CI and the user's terminal run it. Don't try to bypass the sandbox to run Firefox; rely on CI for it.
+- Touch input is tested by dispatching touch events. On touch devices GSAP's Observer listens to touch events and cancels only `touchmove`, so taps still click links.
 - When changing navigation or animation, prove each guarding test still bites: temporarily revert the fix, confirm the test fails, then restore it. The stress test and the cold-load test exist because ad hoc checks missed real bugs.
 - Dependabot opens weekly PRs against `dev`. Grouped minor and patch PRs can be merged once green. Majors need a local run, and `vite` and `@vitejs/plugin-vue` must move together.
 

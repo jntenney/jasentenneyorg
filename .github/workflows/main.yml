@@ -11,7 +11,18 @@ on:
 jobs:
   # Nothing deploys unless the Playwright suite passes on the exact commit being deployed.
   test:
+    # One runner per Playwright project, in parallel. The tests inside a project run one at a time
+    # because several measure timing; separate runners keep that true without serialising the projects.
+    name: test (${{ matrix.project }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { project: chromium, browser: chromium }
+          - { project: firefox, browser: firefox }
+          - { project: webkit-iphone, browser: webkit }
+          - { project: chromium-android, browser: chromium }
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v7
@@ -25,17 +36,17 @@ jobs:
       - name: Install Modules
         run: npm ci
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium webkit
+      - name: Install Playwright Browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run Playwright Tests
-        run: npm test
+        run: npx playwright test --project ${{ matrix.project }}
 
       - name: Upload Test Report
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.project }}
           path: playwright-report/
           retention-days: 14
 
@@ -75,3 +86,58 @@ jobs:
 
       - name: Create CloudFront Invalidation
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/*"
+
+  # After the deploy, wait until the live site serves this exact build, then run the checks that only
+  # make sense in production: security and cache headers, hostname parity, CSP, the cold load and
+  # touch input on emulated phones. A failure here means production is live but wrong; fix forward.
+  verify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://jasentenney.org
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Modules
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium webkit firefox
+
+      # The build is deterministic, so this index.html is byte-for-byte what was just uploaded.
+      - name: Build Application
+        run: npm run build
+
+      - name: Wait for the live site to serve this build
+        run: |
+          expected=$(md5sum dist/index.html | cut -d' ' -f1)
+          for attempt in $(seq 1 60); do
+            live=$(curl -s -H 'Cache-Control: no-cache' "$SITE_URL/" | md5sum | cut -d' ' -f1)
+            if [ "$live" = "$expected" ]; then
+              echo "$SITE_URL serves this build (attempt $attempt)"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::$SITE_URL did not serve this build within 10 minutes"
+          exit 1
+
+      - name: Run Production Checks
+        run: npx playwright test tests/e2e/production.spec.js tests/e2e/cold-load.spec.js tests/e2e/touch.spec.js
+        env:
+          BASE_URL: ${{ env.SITE_URL }}
+
+      - name: Upload Test Report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: production-check-report
+          path: playwright-report/
+          retention-days: 14
